@@ -1,5 +1,7 @@
 package chequescanner.interfaces;
 
+import java.io.InputStream;
+
 public interface ChequeScanner {
-	String getClientNameByCheque(String fileName);
+	String getClientNameByCheque(InputStream dataStream, String fileExt);
 }

@@ -1,21 +1,33 @@
 $(document).ready(function(){
     $("#clientNameByPicBtn").click(function() {
         getClientNameByPic();
-     });
+    });
 });
 
 function getClientNameByPic() {
-    var picName = $("#clientNamePic").attr("src");
+    var fileList = $("#myFile")[0].files;
 
-    $.ajax({
-        type: "GET",
-        url: "chequeScanner/" + picName,
-        dataType: "text"
-    }).done(function (res) {
-        console.log("Data: " + res + "\nStatus: " + status);
+    if (fileList.length > 0) {
+        var file = fileList[0];
 
-        $("#clientNameLbl").text(res);
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-      alert(jqXHR.responseText);
-    });
+        if (file !== null) {
+            var formData = new FormData();
+            formData.append("file", file);
+
+            $.ajax({
+                type: "POST",
+                url: "chequeScanner/",
+                cache: false,
+                processData: false,
+                contentType: false,
+                data: formData,
+            }).done(function (res) {
+                console.log("Data: " + res + "\nStatus: " + status);
+
+                $("#clientNameLbl").text(res);
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                alert(jqXHR.responseText);
+            });
+        }
+    }
 }

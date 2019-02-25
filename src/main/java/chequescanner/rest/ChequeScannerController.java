@@ -1,12 +1,11 @@
 package chequescanner.rest;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import chequescanner.interfaces.ChequeScanner;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("chequeScanner")
@@ -17,8 +16,18 @@ public class ChequeScannerController {
        this.chequeScanner = chequeScanner;
     }
 	
-    @GetMapping(path = "/{fileName}", produces = "application/json")
-    public String getClientNameByCheque(@PathVariable String fileName) {
-        return chequeScanner.getClientNameByCheque(fileName);
+    @PostMapping(path = "/")
+    public String getClientNameByCheque(@RequestParam("file") MultipartFile multipartFile) {
+        String clientName = null;
+
+        try {
+            String fileExt = multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().lastIndexOf(".") + 1);
+
+            clientName = chequeScanner.getClientNameByCheque(multipartFile.getInputStream(), fileExt);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return clientName;
     }
 }
